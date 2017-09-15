@@ -13,7 +13,7 @@ asset ResourceLiability identified by txNumber {
     --> Resource resource
     --> Company owner
 }
-asset ApprovalDoc identified by docID {
+asset Doc identified by docID {
     o String docID
     --> Resource resource
 }
@@ -27,6 +27,6 @@ transaction TransferLiability {
     --> Company newOwner
 }
 transaction RequestDocApproval {
-    --> ApprovalDoc doc
+    --> Doc doc
     --> Company approver
 }
