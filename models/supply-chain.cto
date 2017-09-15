@@ -15,7 +15,8 @@ asset ResourceLiability identified by txNumber {
 }
 asset Doc identified by docID {
     o String docID
-    --> Resource resource
+    o String hash
+    --> OrderRequest request
 }
 
 participant Company identified by name {
@@ -26,8 +27,8 @@ transaction OrderRequest identified by orderID {
 	o String orderID
 	--> Resource[] resources
 }
-transaction ProposeFlow identified by id {
-	o String id
+transaction ProposeFlow identified by ID {
+	o String ID
 	o String workflow
 	--> Company requester
 	--> Company receiver
