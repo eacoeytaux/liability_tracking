@@ -1,0 +1,32 @@
+/**
+ * Sample business network definition.
+ */
+namespace org.acme.mynetwork
+
+asset Resource identified by serialNumber {
+    o String serialNumber
+    o String description
+    --> Company owner
+}
+asset ResourceLiability identified by txNumber {
+    o String txNumber
+    --> Resource resource
+    --> Company owner
+}
+asset ApprovalDoc identified by docID {
+    o String docID
+    --> Resource resource
+}
+
+participant Company identified by name {
+    o String name
+}
+
+transaction TransferLiability {
+    --> ResourceLiability resourceLiability
+    --> Company newOwner
+}
+transaction RequestDocApproval {
+    --> ApprovalDoc doc
+    --> Company approver
+}
