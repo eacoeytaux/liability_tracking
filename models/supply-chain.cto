@@ -1,7 +1,7 @@
 /**
  * Sample business network definition.
  */
-namespace org.acme.supply-chain
+namespace org.acme.supplychain
 
 asset Resource identified by serialNumber {
     o String serialNumber
@@ -13,7 +13,7 @@ asset ResourceLiability identified by txNumber {
     --> Resource resource
     --> Company owner
 }
-asset ApprovalDoc identified by docID {
+asset Doc identified by docID {
     o String docID
     --> Resource resource
 }
@@ -22,21 +22,20 @@ participant Company identified by name {
     o String name
 }
 
-transaction OrderRequest identified by orderID {
-	o String orderID
+transaction OrderRequest {
 	--> Resource[] resources
 }
-transaction ProposeFlow identified by id {
-	o String id
+transaction ProposeFlow {
 	o String workflow
+	o String orderRequest
 	--> Company requester
 	--> Company receiver
 }
 transaction ApproveFlow {
-	--> ProposeFlow flow
+	o String proposalID
 }
 transaction DenyFlow {
-	--> ProposeFlow flow
+	o String proposalID
 }
 
 transaction TransferLiability {
@@ -44,6 +43,6 @@ transaction TransferLiability {
     --> Company newOwner
 }
 transaction RequestDocApproval {
-    --> ApprovalDoc doc
+    --> Doc doc
     --> Company approver
 }
