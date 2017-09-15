@@ -1,7 +1,7 @@
 /**
  * Sample business network definition.
  */
-namespace org.acme.mynetwork
+namespace org.acme.supply-chain
 
 asset Resource identified by serialNumber {
     o String serialNumber
@@ -20,6 +20,23 @@ asset ApprovalDoc identified by docID {
 
 participant Company identified by name {
     o String name
+}
+
+transaction OrderRequest identified by orderID {
+	o String orderID
+	--> Resource[] resources
+}
+transaction ProposeFlow identified by id {
+	o String id
+	o String workflow
+	--> Company requester
+	--> Company receiver
+}
+transaction ApproveFlow {
+	--> ProposeFlow flow
+}
+transaction DenyFlow {
+	--> ProposeFlow flow
 }
 
 transaction TransferLiability {

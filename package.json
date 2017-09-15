@@ -2,13 +2,11 @@
   "engines": {
     "composer": "^0.11.0 || ^0.12.0"
   },
-  "name": "my-network",
+  "name": "supply-chain",
   "version": "0.1.8",
-  "description": "The Hello World of Hyperledger Composer samples",
-  "networkImage": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimage.svg",
-  "networkImageanimated": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimageanimated.svg",
+  "description": "A network for managing and organizing complex supply chain processes",
   "scripts": {
-    "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/my-network.bna",
+    "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/supply-chain.bna",
     "pretest": "npm run lint",
     "lint": "eslint .",
     "postlint": "npm run licchk",
@@ -21,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyperledger/composer-sample-networks.git"
+    "url": "https://github.com/eacoeytaux/liability_tracking.git"
   },
   "keywords": [
-    "sample",
-    "composer",
-    "composer-network"
+	"supply",
+	"chain",
+	"supply-chain"
   ],
   "author": "Hyperledger Composer",
   "license": "Apache-2.0",
