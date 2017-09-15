@@ -3,6 +3,7 @@
  */
 namespace org.acme.supplychain
 
+/** Assets **/
 asset Resource identified by serialNumber {
     o String serialNumber
     o String description
@@ -15,19 +16,26 @@ asset ResourceLiability identified by txNumber {
 }
 asset Doc identified by docID {
     o String docID
-    --> Resource resource
+	o String name
+	o String realDocHash
+	--> Company[] requiredApprovals
+	--> Company submitter
+	o String submitterSignature
 }
 
+/** Participants **/
 participant Company identified by name {
     o String name
 }
 
-transaction OrderRequest {
+
+/** Transactions **/
+transaction RequestOrder {
 	--> Resource[] resources
 }
 transaction ProposeFlow {
 	o String workflow
-	o String orderRequest
+	o String orderRequestID
 	--> Company requester
 	--> Company receiver
 }
@@ -38,11 +46,14 @@ transaction DenyFlow {
 	o String proposalID
 }
 
+transaction ApproveDoc {
+	--> Company approver
+	--> Doc document
+	o String signature
+}
+
 transaction TransferLiability {
     --> ResourceLiability resourceLiability
     --> Company newOwner
 }
-transaction RequestDocApproval {
-    --> Doc doc
-    --> Company approver
-}
+
