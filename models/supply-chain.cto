@@ -1,7 +1,7 @@
 /**
  * Sample business network definition.
  */
-namespace org.acme.supply-chain
+namespace org.acme.supplychain
 
 asset Resource identified by serialNumber {
     o String serialNumber
@@ -14,37 +14,46 @@ asset ResourceLiability identified by txNumber {
     --> Company owner
 }
 asset Doc identified by docID {
-    o String docID
-    o String hash
-    --> OrderRequest request
+    o String docID //unique ID of document
+    o String title //title of doc, does not need to be unique
+    o String hash //hash of document to ensure doc cannot be changed
+    o String permalink optional //points to doc for ease of referral
 }
 
 participant Company identified by name {
-    o String name
+    o String name //name of company
 }
 
-transaction OrderRequest identified by orderID {
-	o String orderID
+transaction RequestOrder {
 	--> Resource[] resources
 }
-transaction ProposeFlow identified by ID {
-	o String ID
-	o String workflow
-	--> Company requester
+
+//inital transactions
+transaction ProposeFlow {
+  o String proposalID //unique ID of proposal
+	o String workflow //workflow to be used in shipment
+	o String orderRequest
+	--> Company requester //company requesting order
 	--> Company receiver
 }
 transaction ApproveFlow {
-	--> ProposeFlow flow
+	o String proposalID
 }
 transaction DenyFlow {
-	--> ProposeFlow flow
+	o String proposalID
 }
 
+//repeated transaction throughout total asset transfer
 transaction TransferLiability {
-    --> ResourceLiability resourceLiability
-    --> Company newOwner
+    --> ResourceLiability[] resourceLiabilities //liabilities of assets being shipped
+    --> Company newOwner //whoever is now responsible for 
 }
 transaction RequestDocApproval {
-    --> Doc doc
-    --> Company approver
+    --> Doc doc //doc that need to be approved for workflow to continue
+    --> Company issuer //company presenting doc
+    --> Company[] reqApprovers //list of companies who need to verify/approve doc
+}
+transaction ApproveDoc {
+    --> Doc doc //doc being approved
+    --> Company approver //company approving doc
 }
