@@ -29,9 +29,10 @@ asset Doc identified by id {
 asset DocReq identified by id {
   o String id
   --> Doc[] docs					// List of uploaded versions of doc (last in array is latest doc)
-  --> Company issuer				// Issuer of document - only they change upload an updated doc
+  --> Company issuer				// Issuer of document - only they can upload an updated doc
   --> Company[] requiredApprovers	// Companies that are required to sign doc
   o String[] signatures				// Signatures of companies approving doc
+  o Integer numSigs					// Number of signatures that have been acquired
 }
 asset Step identified by id {
   o String id
@@ -53,7 +54,7 @@ participant Company identified by name {
 
 /** Transactions **/
 transaction RequestOrder {
-	--> Resource[] resources
+  --> Resource[] resources
 }
 
 //--transactions used to initiate workflow--
@@ -71,7 +72,7 @@ transaction DenyExchange {
 //--repeated transactions throughout total asset transfer--
 
 transaction ApproveDoc {
-  --> DocReq doc		// Doc being approved
+  --> DocReq docReq		// Doc being approved
   o String signature	// Required signature
 }
 
