@@ -1,5 +1,5 @@
 /**
- * Sample business network definition.
+ * Supply chain network example
  */
 namespace org.acme.supplychain
 
@@ -9,7 +9,8 @@ asset ResourceClass identified by id {
   o String id
 }
 asset Resource identified by serialNumber {
-  o String serialNumber
+  o String id
+  o String name
   o String description
   --> Company owner
 }
@@ -21,26 +22,26 @@ asset ResourceLiability identified by txNumber {
 
 asset Doc identified by id {
   o String id
-  o String name //title of doc, does not need to be unique
-  o String hash optional //hash of document to ensure doc cannot be changed
-  o String permalink optional //points to doc for ease of referral
+  o String name					// Title of doc, does not need to be unique
+  o String hash optional		// Hash of document to ensure doc cannot be changed
+  o String permalink optional	// Points to doc for ease of referral
 }
 asset DocReq identified by id {
   o String id
-  --> Doc[] docs //list of uploaded versions of doc (last in array is latest doc)
-  --> Company issuer //issuer of document - only they change upload an updated doc
-  --> Company[] requiredApprovers //companies that are required to sign doc
-  o String[] signatures //signatures of companies approving doc
+  --> Doc[] docs					// List of uploaded versions of doc (last in array is latest doc)
+  --> Company issuer				// Issuer of document - only they change upload an updated doc
+  --> Company[] requiredApprovers	// Companies that are required to sign doc
+  o String[] signatures				// Signatures of companies approving doc
 }
 asset Step identified by id {
   o String id
-  --> DocReq[] docReqs //list of document requirements to be met before step is completed
-  --> Company newOwner optional
+  --> DocReq[] docReqs			// List of document requirements to be met before step is completed
+  --> Company newOwner optional	// Once the step is complete, the resources are switched to this new owner
 }
 asset Exchange identified by id {
   o String id
-  --> Resource[] resources //resources that are being exchanged
-  --> Step[] steps //steps that need to be completed for exchange to complete
+  --> Resource[] resources	// Resources that are being exchanged
+  --> Step[] steps			// Steps that need to be completed for exchange to complete
   --> Company exporter
   --> Company importer
 }
@@ -57,26 +58,21 @@ transaction RequestOrder {
 
 //--transactions used to initiate workflow--
 
-transaction ProposeFlow {
-	o String workflow		// workflow to be used in shipment
-	o String orderRequestID	// RequestOrder tx ID
-	--> Company producer	// Company requesting order
+transaction ProposeExchange {
+  --> Exchange proposal	// Exchange flow being proposed
 }
-transaction ApproveFlow {
-	o String proposalID
+transaction ApproveExchange {
+  --> Exchange proposal	// Exchange being approved
 }
-transaction DenyFlow {
-	o String proposalID
+transaction DenyExchange {
+  --> Exchange proposal	// Exchange being denied
 }
 
 //--repeated transactions throughout total asset transfer--
 
-transaction RequestDocApproval {
-  --> Doc[] docs //docs that need to be approved for workflow to continue
-  --> Company[] reqApprovers //list of companies who need to verify/approve doc
-}
-transaction ApproveDocs {
-  --> Doc[] docs //docs being approved
+transaction ApproveDoc {
+  --> DocReq doc		// Doc being approved
+  o String signature	// Required signature
 }
 
 transaction TransferLiability {
