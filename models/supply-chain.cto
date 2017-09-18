@@ -3,38 +3,50 @@
  */
 namespace org.acme.supplychain
 
-asset Resource identified by serialNumber {
-    o String serialNumber
-    o String description
-    --> Company owner
+/** Assets **/
+
+asset ResourceClass identified by resourceID {
+  o String resourceID
 }
+asset Resource identified by serialNumber {
+  o String serialNumber
+  o String description
+  --> Company owner
+}
+
 asset ResourceLiability identified by txNumber {
-    o String txNumber
-    --> Resource resource
-    --> Company owner
+  o String txNumber
+  --> Resource resource
+  --> Company owner
 }
 asset Doc identified by docID {
-    o String docID //unique ID of document
-    o String title //title of doc, does not need to be unique
-    o String hash //hash of document to ensure doc cannot be changed
-    o String permalink optional //points to doc for ease of referral
+  o String docID //unique ID of document
+  o String name //title of doc, does not need to be unique
+  o String hash //hash of document to ensure doc cannot be changed
+  o String permalink optional //points to doc for ease of referral
+  o String submitterSignature
 }
 
+/** Participants **/
 participant Company identified by name {
-    o String name //name of company
+  o String name //name of company
 }
 
+
+
+/** Transactions **/
 transaction RequestOrder {
 	--> Resource[] resources
 }
 
-//inital transactions
+//--transactions used to initiate workflow--
+
 transaction ProposeFlow {
   o String proposalID //unique ID of proposal
 	o String workflow //workflow to be used in shipment
 	o String orderRequest
-	--> Company requester //company requesting order
-	--> Company receiver
+	--> Company exporter //company requesting order
+	--> Company importer
 }
 transaction ApproveFlow {
 	o String proposalID
@@ -43,17 +55,16 @@ transaction DenyFlow {
 	o String proposalID
 }
 
-//repeated transaction throughout total asset transfer
-transaction TransferLiability {
-    --> ResourceLiability[] resourceLiabilities //liabilities of assets being shipped
-    --> Company newOwner //whoever is now responsible for 
-}
+//--repeated transactions throughout total asset transfer--
+
 transaction RequestDocApproval {
-    --> Doc doc //doc that need to be approved for workflow to continue
-    --> Company issuer //company presenting doc
-    --> Company[] reqApprovers //list of companies who need to verify/approve doc
+  --> Doc[] docs //docs that need to be approved for workflow to continue
+  --> Company[] reqApprovers //list of companies who need to verify/approve doc
 }
-transaction ApproveDoc {
-    --> Doc doc //doc being approved
-    --> Company approver //company approving doc
+transaction ApproveDocs {
+  --> Doc[] docs //docs being approved
+}
+
+transaction TransferLiability {
+  --> ResourceLiability[] resourceLiabilities //liabilities of assets being shipped
 }
