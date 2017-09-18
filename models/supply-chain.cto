@@ -73,12 +73,9 @@ transaction DenyFlow {
 
 //--repeated transactions throughout total asset transfer--
 
-transaction RequestDocApproval {
-  --> Doc[] docs //docs that need to be approved for workflow to continue
-  --> Company[] reqApprovers //list of companies who need to verify/approve doc
-}
-transaction ApproveDocs {
-  --> Doc[] docs //docs being approved
+transaction ApproveDoc {
+  --> DocReq docReq //doc being approved
+  o String signature //signed hash of doc
 }
 
 transaction TransferLiability {
