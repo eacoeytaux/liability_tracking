@@ -4,44 +4,47 @@
 namespace org.acme.supplychain
 
 /** Assets **/
-asset ResourceClass {
-	--> Resource[] resources
+
+asset ResourceClass identified by resourceID {
+  o String resourceID
 }
 asset Resource identified by serialNumber {
-    o String serialNumber
-    o String description
-    --> Company owner
+  o String serialNumber
+  o String description
+  --> Company owner
 }
+
 asset ResourceLiability identified by txNumber {
-    o String txNumber
-    --> Resource resource
-    --> Company owner
+  o String txNumber
+  --> Resource resource
+  --> Company owner
 }
 asset Doc identified by docID {
-    o String docID
-	o String name
-	o String realDocHash
-	--> Company[] requiredApprovals
-	--> Company submitter
-	o String submitterSignature
+  o String docID //unique ID of document
+  o String name //title of doc, does not need to be unique
+  o String hash //hash of document to ensure doc cannot be changed
+  o String permalink optional //points to doc for ease of referral
+  o String submitterSignature
 }
 
 /** Participants **/
 participant Company identified by name {
-    o String name
+  o String name //name of company
 }
+
 
 
 /** Transactions **/
 transaction RequestOrder {
 	--> Resource[] resources
-	
 }
+
+//--transactions used to initiate workflow--
+
 transaction ProposeFlow {
-	o String workflow
-	o String orderRequestID
-	--> Company exporter
-	--> Company importer
+	o String workflow		// workflow to be used in shipment
+	o String orderRequestID	// RequestOrder tx ID
+	--> Company producer	// Company requesting order
 }
 transaction ApproveFlow {
 	o String proposalID
@@ -50,14 +53,16 @@ transaction DenyFlow {
 	o String proposalID
 }
 
-transaction ApproveDoc {
-	--> Company approver
-	--> Doc document
-	o String signature
+//--repeated transactions throughout total asset transfer--
+
+transaction RequestDocApproval {
+  --> Doc[] docs //docs that need to be approved for workflow to continue
+  --> Company[] reqApprovers //list of companies who need to verify/approve doc
+}
+transaction ApproveDocs {
+  --> Doc[] docs //docs being approved
 }
 
 transaction TransferLiability {
-    --> ResourceLiability resourceLiability
-    --> Company newOwner
+  --> ResourceLiability[] resourceLiabilities //liabilities of assets being shipped
 }
-
