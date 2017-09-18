@@ -4,6 +4,9 @@
 namespace org.acme.supplychain
 
 /** Assets **/
+asset ResourceClass {
+	--> Resource[] resources
+}
 asset Resource identified by serialNumber {
     o String serialNumber
     o String description
@@ -32,6 +35,7 @@ participant Company identified by name {
 /** Transactions **/
 transaction RequestOrder {
 	--> Resource[] resources
+	
 }
 transaction ProposeFlow {
 	o String workflow
