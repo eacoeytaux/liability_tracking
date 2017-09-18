@@ -40,8 +40,8 @@ transaction RequestOrder {
 transaction ProposeFlow {
 	o String workflow
 	o String orderRequestID
-	--> Company requester
-	--> Company receiver
+	--> Company exporter
+	--> Company importer
 }
 transaction ApproveFlow {
 	o String proposalID
