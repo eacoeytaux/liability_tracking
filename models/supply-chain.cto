@@ -28,6 +28,8 @@ asset Doc identified by id {
 }
 asset DocReq identified by id {
   o String id
+  o String name
+  o String description
   --> Doc[] docs					// List of uploaded versions of doc (last in array is latest doc)
   --> Company issuer				// Issuer of document - only they can upload an updated doc
   --> Company[] requiredApprovers	// Companies that are required to sign doc
@@ -54,13 +56,15 @@ participant Company identified by name {
 
 /** Transactions **/
 transaction RequestOrder {
-  --> Resource[] resources
+  //--> Resource[] resources
 }
 
 //--transactions used to initiate workflow--
 
 transaction ProposeExchange {
-  --> Exchange proposal	// Exchange flow being proposed
+  o String exchangeJSON // Proposed Exchange in JSON string
+  --> Company exporter
+  --> Company importer
 }
 transaction ApproveExchange {
   --> Exchange proposal	// Exchange being approved
